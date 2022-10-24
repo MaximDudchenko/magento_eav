@@ -1,0 +1,14 @@
+<?php
+/**
+ * @var Dudchenko\ProductAdditionalAttributes\Block\ProductView $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+$heightEnable = $block->getProductHeightEnable();
+$height = $block->getProductHeight();
+?>
+
+<?php if ($heightEnable && !is_null($height)): ?>
+    <div class="product-info-height">
+        <h3>Height: <?= $escaper->escapeHtml($height) ?></h3>
+    </div>
+<?php endif; ?>

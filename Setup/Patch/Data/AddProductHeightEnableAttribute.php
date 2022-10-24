@@ -40,6 +40,7 @@ class AddProductHeightEnableAttribute implements DataPatchInterface
 
         $attributeCode = 'product_height_enable';
         $attributeLabel = 'Product Height Enable';
+        $attributeGroup = 'General';
 
         $categorySetup->addAttribute(
             Product::ENTITY,
@@ -53,25 +54,29 @@ class AddProductHeightEnableAttribute implements DataPatchInterface
                 'source' => Product\Attribute\Source\Boolean::class,
                 'global' => ScopedAttributeInterface::SCOPE_GLOBAL,
                 'visible' => true,
+                'is_visible' => true,
                 'required' => false,
                 'user_defined' => true,
-                'default' => '',
-                'visible_on_front' => false,
+                'default' => false,
+                'visible_on_front' => true,
                 'unique' => false,
-                'is_used_in_grid' => true,
+                'filterable' => 1,
+                'is_html_allowed_on_front' => true,
                 'sort_order' => 49
             ]
         );
 
-        $attributeSetId = $categorySetup->getDefaultAttributeSetId(Product::ENTITY);
-
-        $categorySetup->addAttributeToGroup(
-            Product::ENTITY,
-            $attributeSetId,
-            'Default',
-            $attributeCode,
-            99
-        );
+        $attributeSetIds = $categorySetup->getAllAttributeSetIds(Product::ENTITY);
+        foreach ($attributeSetIds as $attributeSetId) {
+            $attributeGroupId = $categorySetup->getAttributeGroupId(Product::ENTITY, $attributeSetId, $attributeGroup);
+            $categorySetup->addAttributeToGroup(
+                Product::ENTITY,
+                $attributeSetId,
+                $attributeGroupId,
+                $attributeCode,
+                99
+            );
+        }
     }
 
     public static function getDependencies()

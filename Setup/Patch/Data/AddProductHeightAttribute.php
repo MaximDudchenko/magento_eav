@@ -38,11 +38,9 @@ class AddProductHeightAttribute implements DataPatchInterface
         /** @var CategorySetup $categorySetup */
         $categorySetup = $this->categorySetupFactory->create(['setup' => $this->moduleDataSetup]);
 
-        /**
-         * Product Height
-         */
         $attributeCode = 'product_height';
         $attributeLabel = 'Product Height';
+        $attributeGroup = 'General';
 
         $categorySetup->addAttribute(
             Product::ENTITY,
@@ -54,59 +52,26 @@ class AddProductHeightAttribute implements DataPatchInterface
                 'input' => 'text',
                 'global' => ScopedAttributeInterface::SCOPE_GLOBAL,
                 'visible' => true,
+                'is_visible' => true,
                 'required' => false,
                 'user_defined' => true,
-                'default' => '',
                 'visible_on_front' => true,
                 'unique' => false,
-                'is_used_in_grid' => true,
-                'is_visible_in_grid' => true,
                 'sort_order' => 50
             ]
         );
 
-        $attributeSetId = $categorySetup->getDefaultAttributeSetId(Product::ENTITY);
-
-        $categorySetup->addAttributeToGroup(
-            Product::ENTITY,
-            $attributeSetId,
-            'Default',
-            $attributeCode,
-            100
-        );
-
-        $attributeCode = 'product_height_enable';
-        $attributeLabel = 'Product Height Enable';
-
-        $categorySetup->addAttribute(
-            Product::ENTITY,
-            $attributeCode,
-            [
-                'type' => 'int',
-                'frontend' => '',
-                'label' => $attributeLabel,
-                'input' => 'boolean',
-                'global' => ScopedAttributeInterface::SCOPE_GLOBAL,
-                'visible' => true,
-                'required' => false,
-                'user_defined' => true,
-                'default' => '',
-                'visible_on_front' => false,
-                'unique' => false,
-                'is_used_in_grid' => true,
-                'sort_order' => 50
-            ]
-        );
-
-        $attributeSetId = $categorySetup->getDefaultAttributeSetId(Product::ENTITY);
-
-        $categorySetup->addAttributeToGroup(
-            Product::ENTITY,
-            $attributeSetId,
-            'Default',
-            $attributeCode,
-            100
-        );
+        $attributeSetIds = $categorySetup->getAllAttributeSetIds(Product::ENTITY);
+        foreach ($attributeSetIds as $attributeSetId) {
+            $attributeGroupId = $categorySetup->getAttributeGroupId(Product::ENTITY, $attributeSetId, $attributeGroup);
+            $categorySetup->addAttributeToGroup(
+                Product::ENTITY,
+                $attributeSetId,
+                $attributeGroupId,
+                $attributeCode,
+                100
+            );
+        }
     }
 
     public static function getDependencies()
