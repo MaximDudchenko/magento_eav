@@ -6,30 +6,32 @@ use Magento\Framework\View\Element\Template;
 use Magento\Backend\Block\Template\Context;
 use \Magento\Framework\Registry;
 use Magento\Catalog\Model\Product;
+use Magento\Catalog\Api\ProductRepositoryInterface;
+use function PHPUnit\Framework\isNull;
 
 class ProductView extends Template
 {
-    /**
-     * @var Registry
-     */
-    protected $registry;
-
     /**
      * @var Product
      */
     protected $product;
 
     /**
+     * @var ProductRepositoryInterface
+     */
+    protected $productRepository;
+
+    /**
      * @param Context $context
-     * @param Registry $registry
+     * @param ProductRepositoryInterface $productRepository
      * @param array $data
      */
     public function __construct(
         Context $context,
-        Registry $registry,
+        ProductRepositoryInterface $productRepository,
         array $data = []
     ) {
-        $this->registry = $registry;
+        $this->productRepository = $productRepository;
         parent::__construct($context, $data);
     }
 
@@ -38,7 +40,7 @@ class ProductView extends Template
      */
     private function getProduct(): Product|null
     {
-        return is_null($this->product) ? $this->registry->registry('product') : $this->product;
+        return is_null($this->product) ? $this->productRepository->getById($this->getRequest()->getParam('id')) : $this->product;
     }
 
 
